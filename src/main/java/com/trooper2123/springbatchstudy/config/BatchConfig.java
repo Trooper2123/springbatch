@@ -13,6 +13,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,13 +40,19 @@ public class BatchConfig {
     public Step printHelloStep() {
         return stepBuilderFactory
                 .get("printHelloAStep")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
-                        System.out.println("Hello!");
-                        return RepeatStatus.FINISHED;
-                    }
-                })
+                .tasklet(helloTasklet(null))
                 .build();
+    }
+
+    @StepScope
+    @Bean
+    public Tasklet helloTasklet(@Value("${job_parameter_name}") String name) {
+        return new Tasklet() {
+            @Override
+            public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+                System.out.println(String.format("Hello,%S",name));
+                return RepeatStatus.FINISHED;
+            }
+        };
     }
 }
