@@ -1,6 +1,7 @@
 package com.trooper2123.springbatchstudy.config;
 
 
+import com.trooper2123.springbatchstudy.Userinsert;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
@@ -35,6 +36,7 @@ public class BatchConfig {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
+    private Userinsert userinsert;
 
     @Bean
     public Job printOddOrEvenJob() {
@@ -49,15 +51,15 @@ public class BatchConfig {
         return stepBuilderFactory
                 .get("printOddOrEvenStep")
                 .<Integer, String>chunk(1)
-                .reader(countUntillTenReader())
+                .reader(countUntillReader())
                 .processor(oddOrEvenProcessor())
                 .writer(printWriter())
                 .build();
     }
 
-    public IteratorItemReader<Integer> countUntillTenReader(){
-        List<Integer> numberUntilTen = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-        return new IteratorItemReader<Integer>(numberUntilTen.iterator());
+    public IteratorItemReader<Integer> countUntillReader(){
+        List<Integer> numberUntil = Arrays.asList(userinsert.intoArray());
+        return new IteratorItemReader<Integer>(numberUntil.iterator());
     }
 
     public FunctionItemProcessor<Integer,String> oddOrEvenProcessor(){
