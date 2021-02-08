@@ -1,4 +1,4 @@
-package com.trooper2123.springbatchstudy.config;
+package com.trooper2123.springbatchstudy.job;
 
 
 import org.springframework.batch.core.Job;
@@ -24,35 +24,14 @@ public class BatchConfig {
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
 
     @Bean
-    public Job printHelloJob() {
+    public Job printHelloJob(Step printHelloStep ) {
         return jobBuilderFactory
                 .get("printHelloJob")
-                .start(printHelloStep())
+                .start(printHelloStep)
                 .incrementer(new RunIdIncrementer())
                 .build();
     }
 
-    public Step printHelloStep() {
-        return stepBuilderFactory
-                .get("printHelloAStep")
-                .tasklet(helloTasklet(null))
-                .build();
-    }
-
-    @StepScope
-    @Bean
-    public Tasklet helloTasklet(@Value("${job_parameter_name}") String name) {
-        return new Tasklet() {
-            @Override
-            public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
-                System.out.println(String.format("Hello,%S",name));
-                return RepeatStatus.FINISHED;
-            }
-        };
-    }
 }
