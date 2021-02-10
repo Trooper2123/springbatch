@@ -10,7 +10,9 @@ public class PropsConfig {
     @Bean
     public PropertySourcesPlaceholderConfigurer config() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-        configurer.setLocation(new FileSystemResource("src/main/resources/application.properties"));
+        configurer.setLocation(new FileSystemResource("/etc/config/firstjob/application.properties"));
         return configurer;
+
+
     }
 }
